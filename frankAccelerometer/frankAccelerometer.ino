@@ -8,9 +8,9 @@ const int PIN_Y = A2;
 const int PIN_Z = A1;
 
 // LED pin connections (greem ,blue, & violet)
-const int PIN_G = 4;
-const int PIN_B = 3;
-const int PIN_V = 2;
+const int PIN_LED_G = 4;
+const int PIN_LED_B = 3;
+const int PIN_LED_V = 2;
 
 // Values for +/- 1 G
 // Change these based on values shown when tilting
@@ -22,11 +22,14 @@ const int X_MAX = 420;
 const int Y_MAX = 420;
 const int Z_MAX = 420;
 
+// Detection threshold in G for lighting LEDs
+const float THRESHOLD = 0.3;
+
 void setup() {
 
-  pinMode(PIN_G, OUTPUT);
-  pinMode(PIN_B, OUTPUT);
-  pinMode(PIN_V, OUTPUT);
+  pinMode(PIN_LED_G, OUTPUT);
+  pinMode(PIN_LED_B, OUTPUT);
+  pinMode(PIN_LED_V, OUTPUT);
   Serial.begin(9600);
   flashLEDs();
 
@@ -54,22 +57,22 @@ void loop() {
 
 void updateLEDs(float &xG, float &yG, float &zG) {
 
-  if (xG >= 0.1 || xG <= -0.1) {
-    digitalWrite(PIN_G, HIGH);
+  if (xG >= THRESHOLD || xG <= -THRESHOLD) {
+    digitalWrite(PIN_LED_G, HIGH);
   } else {
-    digitalWrite(PIN_G, LOW);
+    digitalWrite(PIN_LED_G, LOW);
   }
 
-  if (yG >= 0.1 || yG <= -0.1) {
-    digitalWrite(PIN_B, HIGH);
+  if (yG >= THRESHOLD || yG <= -THRESHOLD) {
+    digitalWrite(PIN_LED_B, HIGH);
   } else {
-    digitalWrite(PIN_B, LOW);
+    digitalWrite(PIN_LED_B, LOW);
   }
 
-  if (zG >= 1.1 || zG <= 0.9) {
-    digitalWrite(PIN_V, HIGH);
+  if (zG >= 1 + THRESHOLD || zG <= 1 - THRESHOLD) {
+    digitalWrite(PIN_LED_V, HIGH);
   } else {
-    digitalWrite(PIN_V, LOW);
+    digitalWrite(PIN_LED_V, LOW);
   }
 
 }
@@ -99,13 +102,13 @@ void printValuesG(int &xG, int &yG, int &zG) {
 void flashLEDs() {
 
   for (int ii = 0; ii < 10; ii++) {
-    digitalWrite(PIN_G, HIGH);
-    digitalWrite(PIN_B, HIGH);
-    digitalWrite(PIN_V, HIGH);
+    digitalWrite(PIN_LED_G, HIGH);
+    digitalWrite(PIN_LED_B, HIGH);
+    digitalWrite(PIN_LED_V, HIGH);
     delay(100);
-    digitalWrite(PIN_G, LOW);
-    digitalWrite(PIN_B, LOW);
-    digitalWrite(PIN_V, LOW);
+    digitalWrite(PIN_LED_G, LOW);
+    digitalWrite(PIN_LED_B, LOW);
+    digitalWrite(PIN_LED_V, LOW);
     delay(100);
   }
   
