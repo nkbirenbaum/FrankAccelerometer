@@ -1,13 +1,13 @@
 // frankAccelerometer.ino flashes LEDs when the accelerometer is moved significantly
 // By Nathan Birenbaum 
-// Last updated 2/6/2023
+// Last updated 2/8/2023
 
 // Accelerometer pin connections
 const int PIN_X = A3;
 const int PIN_Y = A2;
 const int PIN_Z = A1;
 
-// LED pin connections (greem ,blue, & violet)
+// LED pin connections (green, blue, & violet)
 const int PIN_LED_G = 4;
 const int PIN_LED_B = 3;
 const int PIN_LED_V = 2;
@@ -15,16 +15,19 @@ const int PIN_LED_V = 2;
 // Values for +/- 1 G
 // Change these based on values shown when tilting
 // along each axis in each direction
-const int X_MIN = 280;
-const int Y_MIN = 280;
-const int Z_MIN = 280;
-const int X_MAX = 420;
-const int Y_MAX = 420;
-const int Z_MAX = 420;
+const int X_MIN = 270;
+const int Y_MIN = 266;
+const int Z_MIN = 273;
+const int X_MAX = 405;
+const int Y_MAX = 405;
+const int Z_MAX = 404;
 
 // Detection threshold in G for lighting LEDs
-const float THRESHOLD = 0.3;
+const float X_THRESHOLD = 0.3;
+const float Y_THRESHOLD = 0.3;
+const float Z_THRESHOLD = 0.3;
 
+// Runs once on power up
 void setup() {
 
   pinMode(PIN_LED_G, OUTPUT);
@@ -35,6 +38,7 @@ void setup() {
 
 }
 
+// Runs indefinitely until powered down
 void loop() {
 
   int xAcc = analogRead(PIN_X);
@@ -55,28 +59,29 @@ void loop() {
 
 }
 
+// Toggles LEDs on if outside threshold or off if within threshold
 void updateLEDs(float &xG, float &yG, float &zG) {
 
-  if (xG >= THRESHOLD || xG <= -THRESHOLD) {
+  if (xG >= X_THRESHOLD || xG <= -X_THRESHOLD) {
     digitalWrite(PIN_LED_G, HIGH);
   } else {
     digitalWrite(PIN_LED_G, LOW);
   }
 
-  if (yG >= THRESHOLD || yG <= -THRESHOLD) {
+  if (yG >= Y_THRESHOLD || yG <= -Y_THRESHOLD) {
     digitalWrite(PIN_LED_B, HIGH);
   } else {
     digitalWrite(PIN_LED_B, LOW);
   }
 
-  if (zG >= 1 + THRESHOLD || zG <= 1 - THRESHOLD) {
+  if (zG >= 1 + Z_THRESHOLD || zG <= 1 - Z_THRESHOLD) {
     digitalWrite(PIN_LED_V, HIGH);
   } else {
     digitalWrite(PIN_LED_V, LOW);
   }
 
 }
-
+// Prints acceleration integer values for debugging
 void printValues(int &xAcc, int &yAcc, int &zAcc) {
 
   Serial.print(xAcc);
@@ -88,6 +93,7 @@ void printValues(int &xAcc, int &yAcc, int &zAcc) {
   
 }
 
+// Print acceleration G values for debugging (currently unused)
 void printValuesG(int &xG, int &yG, int &zG) {
 
   Serial.print(xG);
@@ -99,17 +105,18 @@ void printValuesG(int &xG, int &yG, int &zG) {
   
 }
 
+// Blink LEDs at startup
 void flashLEDs() {
 
   for (int ii = 0; ii < 10; ii++) {
     digitalWrite(PIN_LED_G, HIGH);
     digitalWrite(PIN_LED_B, HIGH);
     digitalWrite(PIN_LED_V, HIGH);
-    delay(100);
+    delay(200);
     digitalWrite(PIN_LED_G, LOW);
     digitalWrite(PIN_LED_B, LOW);
     digitalWrite(PIN_LED_V, LOW);
-    delay(100);
+    delay(200);
   }
   
 }
